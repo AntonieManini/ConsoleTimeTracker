@@ -7,14 +7,25 @@ public class Command {
 		TASK, MODULE
 	}
 	
-	private CommandName commandName;
+	private CommandName name;
+	private CommandArg type;
 	private Map<String, String> args;
 	
-	public getCommandName() {
-		return this.commandName;
+	public Command(CommandName name, CommandArg type, Map<String, String> args) {
+		this.name = name;
+		this.type = type;
+		this.args = args;
 	}
 	
-	public setCommandName(CommandName commandName) {
-		this.commandName = commandName;
+	public CommandName getName() {
+		return this.name;
+	}
+	
+	public setName(CommandName name) {
+		this.name = name;
+	}
+	
+	public CommandArg getType() {
+		return this.type;
 	}
 }
