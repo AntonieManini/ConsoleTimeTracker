@@ -1,21 +1,31 @@
+import java.util.HashMap;
+import java.util.Map;
+
 public class CommandParser {
-	private Map<String, String> args = new HashMap<String, String>();
+	private Map<String, String> argsMap = new HashMap<String, String>();
 	
-	public static Command parse(String args) {
+	public Command parse(String args) {
 		String[] argsData = args.split("[ \t]+");
 		
 		if (argsData.length > 0) {
-			CommandName name = CommandName.valueOf(argsData[0]);
-			CommandArg = null;
+			Command.CommandName name = Command.CommandName.valueOf(argsData[0].toUpperCase());
+			Command.CommandArg type = null;
 			
-			if (commandName.equal(CommandName.ADD) {
-				type = CommandArg.valueOf(argsData[1]);
+			if (name.equals(Command.CommandName.ADD)) {
+				type = Command.CommandArg.valueOf(argsData[1].toUpperCase());
 				
-				args.put("description", args[2]);
+				String description = new String("");
+				int index = 2;
+				while (!argsData[index].startsWith("--")) {
+					description += argsData[index] + " ";
+					index++;
+				}
+				
+				argsMap.put("description", description.trim());
 				
 				String key = new String("");
 				String value = new String("");
-				for (int i = 3; i < argsData.length; i++) {
+				for (int i = index; i < argsData.length; i++) {
 					if (argsData[i].startsWith("--")) {
 						key = argsData[i];
 					}
@@ -24,7 +34,7 @@ public class CommandParser {
 					}
 					
 					if (!key.isEmpty() && !value.isEmpty()) {
-						args.put(key, value);
+						argsMap.put(key, value);
 						
 						key = new String("");
 						value = new String("");
@@ -35,7 +45,7 @@ public class CommandParser {
 				new Command(name, null, null);
 			}
 			
-			return new Command(name, type, args);
+			return new Command(name, type, argsMap);
 		}
 		else {
 			return null;

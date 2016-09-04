@@ -1,4 +1,10 @@
-import Command.CommandName;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Map;
+import java.util.Scanner;
 
 public class ConsoleService implements Runnable {
 	private Scanner scanner;
@@ -15,13 +21,15 @@ public class ConsoleService implements Runnable {
 	}
 	
 	@Override
-	public void run {
+	public void run() {
 		Command currentCommand = new Command();
 		
-		while (currentCommand.getName() != EXIT) {
-			String stringCommand = scanner.getLine();
+		while (currentCommand.getName() != Command.CommandName.EXIT) {
+			System.out.print(">> ");			
+			String stringCommand = scanner.nextLine();
 			
-			currentCommand = CommandParser.parse(stringCommand);
+			CommandParser parser = new CommandParser();
+			currentCommand = parser.parse(stringCommand);
 			
 			if (currentCommand != null) {
 				switch (currentCommand.getName()) {
@@ -43,11 +51,14 @@ public class ConsoleService implements Runnable {
 	}
 	
 	private void add(Command cmd) {
-		if (cmd.getType())
-		task = new Task();		
-		
-		this.task.setDescription(cmd.getArgs().get("description"));
-		this.task.setModule(new Module(cmd.getArgs().get("module")));
+		if (cmd.getType().equals(Command.CommandArg.TASK)) {
+			task = new Task();		
+			
+			this.task.setDescription(cmd.getArgs().get("description"));
+			this.task.setModule(new Module(cmd.getArgs().get("--module")));
+			
+			System.out.println(this.task);
+		}
 	}
 	
 	private void remove(Map<String, String> args) {
@@ -55,12 +66,31 @@ public class ConsoleService implements Runnable {
 	}
 
 	private void start() {
-		this.task.setStartTime(new Date());
+		this.task.setStartTime(Calendar.getInstance());
+		
+		System.out.println(this.task);
 	}
 
 	private void stop() {
-		this.task.setEndTime(new Date());
-		//write to text file
+		this.task.setEndTime(Calendar.getInstance());
+		
+		try {
+			File outputFile = new File(String.format("%d_%02d_%02d_%02d_%02d.txt", this.task.getStartTime().get(Calendar.YEAR), 
+					this.task.getStartTime().get(Calendar.MONTH) + 1, this.task.getStartTime().get(Calendar.DAY_OF_MONTH),
+					this.task.getStartTime().get(Calendar.HOUR_OF_DAY), this.task.getStartTime().get(Calendar.MINUTE)));
+			
+			FileWriter writer = new FileWriter(outputFile.getAbsoluteFile());
+			BufferedWriter bufWriter = new BufferedWriter(writer);
+			
+			bufWriter.write("" + this.task.getEndTime().getTime() + System.lineSeparator());
+			bufWriter.write(this.task.getDescription() + System.lineSeparator());
+			bufWriter.write(this.task.getModule().getName() + System.lineSeparator());
+			
+			bufWriter.close();
+		}
+		catch (Exception e) {
+			
+		}
 	}	
 	
 	public void launch() throws Exception {
@@ -69,6 +99,7 @@ public class ConsoleService implements Runnable {
 	}
 	
 	public void exit() {
-		this.thread.interrupt();
+		System.out.println("Exiting.");
+		System.exit(0);
 	}
 }

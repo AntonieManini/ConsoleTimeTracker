@@ -1,14 +1,17 @@
+import java.util.Calendar;
+import java.util.Date;
+
 public class Task {
-	private Date startTime;
-	private Date endTime;	
+	private Calendar startTime;
+	private Calendar endTime;	
 	private Module module;	
 	private String description;
 	
-	public Date getStartTime() {
+	public Calendar getStartTime() {
 		return this.startTime;
 	}
 	
-	public Date getEndTime() {
+	public Calendar getEndTime() {
 		return this.endTime;
 	}
 	
@@ -24,15 +27,23 @@ public class Task {
 		this.description = description;
 	}
 	
-	public void setStartTime(Date startTime) {
+	public void setStartTime(Calendar startTime) {
 		this.startTime = startTime;
 	}
 	
-	public void setEndTime(Date endTime) {
+	public void setEndTime(Calendar endTime) {
 		this.endTime = endTime;
 	}
 	
 	public void setModule(Module module) {
 		this.module = module;
 	}
+
+	@Override
+	public String toString() {
+		return "Task [startTime=" + startTime + ", endTime=" + endTime
+				+ ", module=" + module + ", description=" + description + "]";
+	}
+	
+	
 }
