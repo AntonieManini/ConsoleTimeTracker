@@ -1,6 +1,7 @@
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -74,22 +75,27 @@ public class ConsoleService implements Runnable {
 	private void stop() {
 		this.task.setEndTime(Calendar.getInstance());
 		
+		FileWriter writer = null;		
 		try {
-			File outputFile = new File(String.format("%d_%02d_%02d_%02d_%02d.txt", this.task.getStartTime().get(Calendar.YEAR), 
-					this.task.getStartTime().get(Calendar.MONTH) + 1, this.task.getStartTime().get(Calendar.DAY_OF_MONTH),
-					this.task.getStartTime().get(Calendar.HOUR_OF_DAY), this.task.getStartTime().get(Calendar.MINUTE)));
+			File outputFile = new File(String.format("%d_%02d_%02d.txt", this.task.getStartTime().get(Calendar.YEAR), 
+					this.task.getStartTime().get(Calendar.MONTH) + 1, this.task.getStartTime().get(Calendar.DAY_OF_MONTH)));
 			
-			FileWriter writer = new FileWriter(outputFile.getAbsoluteFile());
-			BufferedWriter bufWriter = new BufferedWriter(writer);
-			
-			bufWriter.write("" + this.task.getEndTime().getTime() + System.lineSeparator());
-			bufWriter.write(this.task.getDescription() + System.lineSeparator());
-			bufWriter.write(this.task.getModule().getName() + System.lineSeparator());
-			
-			bufWriter.close();
+			writer = new FileWriter(outputFile.getAbsoluteFile(), true);
+
+			writer.write(this.task.getStartTime().get(Calendar.HOUR_OF_DAY) + ":" + this.task.getStartTime().get(Calendar.MINUTE) + System.lineSeparator());
+			writer.write(this.task.getEndTime().get(Calendar.HOUR_OF_DAY) + ":" + this.task.getEndTime().get(Calendar.MINUTE) + System.lineSeparator());
+			writer.write(this.task.getDescription() + System.lineSeparator());
+			writer.write(this.task.getModule().getName() + System.lineSeparator());
 		}
 		catch (Exception e) {
-			
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				writer.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}	
 	
